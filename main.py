@@ -76,3 +76,29 @@ def do_tweet():
     # Save the response as JSON, and print it
     json_response = response.json()
     print(json.dumps(json_response, indent=4, sort_keys=True))
+
+
+#This is the main loop - wait for button press (GPIO Pin 5). When pressed, send a tweet. This will only run on RPi
+#TODO - curently calls GPIO pin 24 (to trigger an LED which is not currently on the board). Replace with writing something to the mini-display on RPI
+
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+# LED (WIP)
+GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)#Button to GPIO23
+GPIO.setup(24, GPIO.OUT)  #LED to GPIO24
+
+try:
+    while True:
+         button_state = GPIO.input(5)
+         if button_state == False:
+             GPIO.output(24, True)
+             print('Button Pressed...')
+             do_tweet()
+             time.sleep(0.2)
+         else:
+             GPIO.output(24, False)
+except:
+    GPIO.cleanup()
